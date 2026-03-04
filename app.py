@@ -165,6 +165,15 @@ def create_app(config_class=Config):
         db.session.commit()
         return redirect(url_for('admin_dashboard'))
 
+    @app.route('/admin/project/delete/<int:id>')
+    @login_required
+    def delete_project(id):
+        project = Project.query.get_or_404(id)
+        db.session.delete(project)
+        db.session.commit()
+        flash('Project deleted.', 'success')
+        return redirect(url_for('admin_dashboard'))
+
     @app.route('/admin/news/new/<int:project_id>', methods=['GET', 'POST'])
     @login_required
     def add_news(project_id):
@@ -184,6 +193,53 @@ def create_app(config_class=Config):
             db.session.commit()
             return redirect(url_for('admin_dashboard'))
         return render_template('admin/news_form.html', project=project)
+
+    @app.route('/admin/news/edit/<int:id>', methods=['GET', 'POST'])
+    @login_required
+    def edit_news(id):
+        news = News.query.get_or_404(id)
+        if request.method == 'POST':
+            news.content = request.form.get('content')
+            clean_text = strip_html(news.content)
+            news.title = clean_text[:60].strip() + ("..." if len(clean_text) > 60 else "")
+            news.summary = clean_text[:160].strip() + ("..." if len(clean_text) > 160 else "")
+            news.external_link = request.form.get('link')
+            if request.files.get('image'):
+                news.image = handle_file_upload(request.files.get('image'), app.config['UPLOAD_FOLDER'], request.form.get('image_name'))
+            db.session.commit()
+            return redirect(url_for('admin_dashboard'))
+        return render_template('admin/news_form.html', project=news.project, news=news)
+
+    @app.route('/admin/news/delete/<int:id>')
+    @login_required
+    def delete_news(id):
+        news = News.query.get_or_404(id)
+        db.session.delete(news)
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+
+    @app.route('/admin/link/add/<int:project_id>', methods=['GET', 'POST'])
+    @login_required
+    def add_link(project_id):
+        project = Project.query.get_or_404(project_id)
+        if request.method == 'POST':
+            link = ProjectLink(
+                project_id=project.id,
+                title=request.form.get('title'),
+                url=request.form.get('url')
+            )
+            db.session.add(link)
+            db.session.commit()
+            return redirect(url_for('admin_dashboard'))
+        return render_template('admin/link_form.html', project=project)
+
+    @app.route('/admin/link/delete/<int:id>')
+    @login_required
+    def delete_link(id):
+        link = ProjectLink.query.get_or_404(id)
+        db.session.delete(link)
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
 
     @app.route('/water-diary')
     def water_diary():
