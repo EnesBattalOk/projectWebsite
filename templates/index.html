@@ -9,23 +9,25 @@
 
             {% if current_project.logo %}
             {% set logo_sz = current_project.logo_size if current_project.logo_size else 80 %}
-            <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
-                {% set logo_url = current_project.logo if current_project.logo.startswith('http') else
-                url_for('static', filename='uploads/' + current_project.logo) %}
-                <img src="{{ logo_url }}" alt="Primary Logo" class="project-identity-logo">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
+                    {% set logo_url = current_project.logo if current_project.logo.startswith('http') else
+                    url_for('static', filename='uploads/' + current_project.logo) %}
+                    <img src="{{ logo_url }}" alt="Primary Logo" class="project-identity-logo">
+                </div>
+                {% if current_project.logo2 %}
+                <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
+                    {% set logo2_url = current_project.logo2 if current_project.logo2.startswith('http') else
+                    url_for('static', filename='uploads/' + current_project.logo2) %}
+                    <img src="{{ logo2_url }}" alt="Secondary Logo" class="project-identity-logo">
+                </div>
+                {% endif %}
             </div>
             {% endif %}
 
             <span class="identity-badge">ACTIVE PROJECT</span>
 
-            {% if current_project.slug == 'etwinning' %}
-            <div class="header-logo-container">
-                <img src="{{ url_for('static', filename='etwinning_logo.jpeg') }}" alt="eTwinning"
-                    style="height: 80px; width: auto;">
-            </div>
-            {% else %}
             <h1 class="identity-name" style="margin-top: 0.25rem;">{{ current_project.name|safe }}</h1>
-            {% endif %}
 
             {% if current_project.subtitle %}
             <p class="identity-subtitle"
