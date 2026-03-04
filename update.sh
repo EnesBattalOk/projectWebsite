@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- PythonAnywhere Otomatik Güncelleme Scripti ---
-# Bu dosyayı PythonAnywhere terminalinde 'sh update.sh' diyerek çalıştırın.
+# Bu dosyayı PythonAnywhere terminalinde 'bash update.sh' diyerek çalıştırın.
 
 echo "--- 🔄 Güncelleme Başlatılıyor... ---"
 
@@ -10,10 +10,9 @@ echo "1. GitHub'dan kodlar çekiliyor..."
 git pull origin main
 
 # 2. Virtualenv aktif et ve kütüphaneleri güncelle
-# NOT: Buradaki 'venv' kısmını PythonAnywhere'deki sanal ortam adınızla değiştirin (genelde venv olur)
 echo "2. Kütüphaneler kontrol ediliyor..."
-source venv/bin/activate
-pip install -r requirements.txt
+. venv/bin/activate 2>/dev/null || true
+pip install -r requirements.txt --quiet
 
 # 3. Veritabanı şemasını güncelle (Eğer yeni sütun eklendiyse)
 echo "3. Veritabanı şeması kontrol ediliyor..."
