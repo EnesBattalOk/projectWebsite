@@ -5,7 +5,6 @@
 <div class="project-identity-header centered">
     <div class="container">
         <div class="identity-wrapper">
-            {% if current_project.slug != 'etwinning' %}
             <div class="identity-logos">
                 {% if current_project.logo %}
                 {% set logo_sz = current_project.logo_size if current_project.logo_size else 80 %}
@@ -15,7 +14,9 @@
                     <img src="{{ logo_url }}" alt="Primary Logo" class="project-identity-logo">
                 </div>
                 {% endif %}
+
                 {% if current_project.logo2 %}
+                {% set logo_sz = current_project.logo_size if current_project.logo_size else 80 %}
                 <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
                     {% set logo2_url = current_project.logo2 if current_project.logo2.startswith('http') else
                     url_for('static', filename='uploads/' + current_project.logo2) %}
@@ -23,7 +24,6 @@
                 </div>
                 {% endif %}
             </div>
-            {% endif %}
 
             <div class="title-area">
                 <span class="identity-badge">ACTIVE PROJECT</span>
