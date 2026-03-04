@@ -1,5 +1,6 @@
 import os
 import json
+import traceback
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -216,7 +217,8 @@ def create_app(config_class=Config):
     @app.errorhandler(500)
     def internal_error(error):
         db.session.rollback()
-        return render_template('500.html'), 500
+        error_details = traceback.format_exc()
+        return f"<h1>500 Server Error</h1><h3>Lütfen bu ekranın fotoğrafını at:</h3><pre>{error_details}</pre>", 500
 
     return app
 
