@@ -3,7 +3,7 @@
 {% block content %}
 <article class="news-detail">
     <div class="news-header">
-        <h1 class="news-title">{{ news.title }}</h1>
+        <h1 class="news-title">{{ news.title|safe }}</h1>
         <div class="news-meta">
             <span class="news-date"><i class="far fa-calendar-alt"></i> {{ news.date_posted.strftime('%B %d, %Y')
                 }}</span>

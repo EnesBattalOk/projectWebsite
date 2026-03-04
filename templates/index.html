@@ -27,7 +27,14 @@
 
             <div class="title-area">
                 <span class="identity-badge">ACTIVE PROJECT</span>
-                <h1 class="identity-name">{{ current_project.name }}</h1>
+                {% if current_project.slug == 'etwinning' %}
+                <div class="header-logo-container mt-2">
+                    <img src="{{ url_for('static', filename='etwinning_logo.jpeg') }}" alt="eTwinning"
+                        style="height: 100px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));">
+                </div>
+                {% else %}
+                <h1 class="identity-name">{{ current_project.name|safe }}</h1>
+                {% endif %}
                 {% if current_project.subtitle %}
                 <p class="identity-subtitle"
                     style="font-size: 1.1rem; font-weight: 300; margin-top: 0.25rem; color: var(--text-muted);">{{
@@ -122,7 +129,7 @@
                     <span class="news-date"><i class="far fa-calendar-alt"></i> {{ item.date_posted.strftime('%B %d,
                         %Y') }}</span>
                     <a href="{{ url_for('view_news', news_id=item.id) }}">
-                        <h3 class="news-title">{{ item.title }}</h3>
+                        <h3 class="news-title">{{ item.title|safe }}</h3>
                     </a>
                     <p class="news-summary">{{ (item.summary or '')|truncate(150)|safe }}</p>
                     <div class="news-footer">
