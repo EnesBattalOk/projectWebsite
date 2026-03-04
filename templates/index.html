@@ -23,10 +23,10 @@
                     <img src="{{ logo2_url }}" alt="Secondary Logo" class="project-identity-logo">
                 </div>
                 {% endif %}
+                <span class="identity-badge" style="display:block; margin-top: 0.75rem;">ACTIVE PROJECT</span>
             </div>
 
             <div class="title-area">
-                <span class="identity-badge">ACTIVE PROJECT</span>
                 {% if current_project.slug == 'etwinning' %}
                 <div class="header-logo-container mt-2">
                     <img src="{{ url_for('static', filename='etwinning_logo.jpeg') }}" alt="eTwinning"
