@@ -1,0 +1,310 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block extra_css %}
+<style>
+    .stats-header {
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border: 1px solid #edf2f7;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-info h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-info .stat-value {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .bg-blue {
+        background: #eff6ff;
+        color: #3b82f6;
+    }
+
+    .bg-green {
+        background: #f0fdf4;
+        color: #10b981;
+    }
+
+    .bg-purple {
+        background: #faf5ff;
+        color: #a855f7;
+    }
+
+    .bg-orange {
+        background: #fff7ed;
+        color: #f97316;
+    }
+
+    .charts-row {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border: 1px solid #edf2f7;
+    }
+
+    .chart-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #edf2f7;
+        padding-bottom: 0.75rem;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table-modern {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-modern th {
+        background: #f8fafc;
+        padding: 1rem;
+        text-align: left;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .table-modern td {
+        padding: 1rem;
+        border-bottom: 1px solid #edf2f7;
+        color: #334155;
+        font-size: 0.95rem;
+        vertical-align: middle;
+    }
+
+    .table-modern tr:hover td {
+        background: #f8fafc;
+    }
+
+    .project-cell {
+        font-weight: 600;
+        color: #3b82f6;
+    }
+
+    .views-badge {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 0.25rem 0.75rem;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    @media (max-width: 1024px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .charts-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-header">
+    <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 0.5rem;"><i class="fas fa-chart-pie"
+            style="color: #3b82f6; margin-right: 10px;"></i> Platform Statistics</h2>
+    <p class="text-muted" style="font-size: 1.1rem;">Track unique visitors and engagement across your projects.</p>
+</div>
+
+<!-- Key Metrics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon bg-blue"><i class="fas fa-users"></i></div>
+        <div class="stat-info">
+            <h4>Daily Visitors</h4>
+            <div class="stat-value">{{ daily }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon bg-green"><i class="fas fa-calendar-alt"></i></div>
+        <div class="stat-info">
+            <h4>Monthly Visitors</h4>
+            <div class="stat-value">{{ monthly }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon bg-purple"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-info">
+            <h4>Yearly Visitors</h4>
+            <div class="stat-value">{{ yearly }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon bg-orange"><i class="fas fa-globe"></i></div>
+        <div class="stat-info">
+            <h4>Total Setup Visits</h4>
+            <div class="stat-value">{{ total }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="charts-row">
+    <!-- Country Demographics Chart -->
+    <div class="chart-card">
+        <h3 class="chart-title"><i class="fas fa-map-marker-alt" style="color:#64748b; margin-right:8px;"></i>
+            Demographics</h3>
+        {% if country_labels %}
+        <canvas id="countryChart" width="100%" height="300"></canvas>
+        {% else %}
+        <div style="text-align: center; padding: 3rem 0; color: #94a3b8;">
+            <i class="fas fa-globe" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p>No demographic data collected yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- News Engagement Table -->
+    <div class="chart-card">
+        <h3 class="chart-title"><i class="fas fa-newspaper" style="color:#64748b; margin-right:8px;"></i> News
+            Engagement (Unique Views)</h3>
+
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>News Title</th>
+                        <th style="text-align: right;">Unique Views</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in news_views %}
+                    <tr>
+                        <td class="project-cell">{{ row.name }}</td>
+                        <td>{{ row.title }}</td>
+                        <td style="text-align: right;"><span class="views-badge">{{ row.views }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2rem; color: #64748b;">No news views
+                            recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Data Injection blocks to prevent IDE syntax errors -->
+{% if country_labels %}
+<script id="chart-labels" type="application/json">{{ country_labels|tojson|safe }}</script>
+<script id="chart-data" type="application/json">{{ country_data|tojson|safe }}</script>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const labelsEl = document.getElementById('chart-labels');
+        const dataEl = document.getElementById('chart-data');
+
+        if (labelsEl && dataEl) {
+            const countryLabels = JSON.parse(labelsEl.textContent);
+            const countryData = JSON.parse(dataEl.textContent);
+
+            const ctx = document.getElementById('countryChart').getContext('2d');
+            const countryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: countryLabels,
+                    datasets: [{
+                        label: 'Visitors',
+                        data: countryData,
+                        backgroundColor: [
+                            '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    family: "'Outfit', sans-serif"
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

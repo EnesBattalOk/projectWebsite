@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Project Platform{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Project News</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Our Projects <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        {% for p in all_projects %}
+                        <a href="{{ url_for('view_project', slug=p.slug) }}">{{ p.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link admin-btn"><i class="fas fa-user-shield"></i>
+                    Admin Panel</a>
+                <a href="{{ url_for('logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link admin-btn"><i class="fas fa-lock"></i> Login</a>
+                {% endif %}
+            </div>
+
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    <div class="mobile-menu-overlay"></div>
+
+    <main>
+        <div class="container mt-2">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section brand-section">
+                <h3 class="footer-logo">
+                    <i class="fas fa-graduation-cap"></i> Project News Platform
+                </h3>
+                <p>Stay updated with our school's innovative projects, latest updates, and achievements. Exploring the
+                    future of education, today.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section links-section-footer">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li><a href="#projects"><i class="fas fa-angle-right"></i> Our Projects</a></li>
+                    <li><a href="/admin"><i class="fas fa-angle-right"></i> Admin Portal</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section developer-section">
+                <h3>Developer</h3>
+                <div class="cv-card">
+                    <div class="cv-card-header">
+                        <div class="cv-avatar">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <div class="cv-info">
+                            <h4 class="cv-name">Enes Battal Ok</h4>
+                            <span class="cv-role">Full Stack Developer</span>
+                        </div>
+                    </div>
+                    <div class="cv-card-body">
+                        <p class="cv-bio">We develop high-performance user interfaces and scalable web infrastructure.
+                        </p>
+                    </div>
+                    <div class="cv-card-footer">
+                        <a href="mailto:enesbattalok32@gmail.com" class="cv-link" title="Contact Me">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                        <a href="#" target="_blank" class="cv-link" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-container">
+                <p>&copy; 2026 School Project Platform. All rights reserved.</p>
+                <p class="design-credit">Designed & Developed by Enes Battal Ok</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

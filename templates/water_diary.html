@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<section class="water-diary-page page-section bg-light py-4">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+
+            <!-- Header & Compact Participants Strip -->
+            <div class="col-12 mb-4 text-center">
+                <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
+                    <img src="{{ url_for('static', filename='etwinning_logo.jpeg') }}" alt="eTwinning" height="40"
+                        onerror="this.style.display='none'">
+                    <h2 class="fw-bold text-dark mb-0">Save Water Save Nature</h2>
+                </div>
+                <p class="text-muted small mb-3">Bill Data Assistance | eTwinning Su Tasarrufu Etkinliği</p>
+
+                <div class="participants-strip p-2 bg-white shadow-sm rounded-pill border mx-auto"
+                    style="max-width: 800px;">
+                    <div class="d-flex align-items-center gap-3 px-3 overflow-auto scrollbar-hide text-nowrap">
+                        <div class="fw-bold text-primary x-small border-end pe-3"><i class="fas fa-users me-2"></i>
+                            KATILIMCILAR</div>
+                        {% for entry in entries[:10] %}
+                        <div class="d-flex align-items-center gap-2 participant-item">
+                            <div class="avatar-mini">{{ entry.student_name[0]|upper }}</div>
+                            <span class="x-small fw-bold">{{ entry.student_name }}</span>
+                            <span class="badge bg-primary-soft text-primary x-small">{{ entry.total_consumption
+                                }}T</span>
+                        </div>
+                        {% else %}
+                        <small class="text-muted x-small">Henüz katılım yok.</small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left: Form & Analysis (Balanced Width) -->
+            <div class="col-lg-6">
+                <div class="water-steps-wrapper">
+
+                    <!-- Step 1: Inputs -->
+                    <div class="card border-0 shadow-sm mb-3 p-3 rounded-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="step-num-sm">1</div>
+                            <h5 class="mb-0 fw-bold">Tüketim Verileri</h5>
+                        </div>
+
+                        <div class="student-info-grid mb-3">
+                            <div class="row g-2">
+                                <div class="col-md-6 text-start">
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Öğrenci Adı Soyadı</label>
+                                    <input type="text" id="studentName"
+                                        class="form-control form-control-sm bg-light border-0" placeholder="Adınız..."
+                                        required>
+                                </div>
+                                <div class="col-md-6 text-start">
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Okul Adı</label>
+                                    <input type="text" id="schoolName"
+                                        class="form-control form-control-sm bg-light border-0"
+                                        placeholder="Okulunuz...">
+                                </div>
+                                <div class="col-md-4 text-start">
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Öğretmen Adı</label>
+                                    <input type="text" id="teacherName"
+                                        class="form-control form-control-sm bg-light border-0"
+                                        placeholder="Öğretmeniniz...">
+                                </div>
+                                <div class="col-md-3 text-start">
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Kişi Sayısı</label>
+                                    <input type="number" id="familySize"
+                                        class="form-control form-control-sm bg-light border-0" value="4" min="1">
+                                </div>
+                                <div class="col-md-5 text-start">
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Okul Logosu</label>
+                                    <input type="file" id="schoolLogoFile"
+                                        class="form-control form-control-sm bg-light border-0" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive rounded-3 border-0 shadow-sm overflow-hidden mb-3">
+                            <table class="table table-sm table-hover mb-0 align-middle">
+                                <thead class="table-dark x-small">
+                                    <tr>
+                                        <th class="ps-3 py-2">DÖNEM</th>
+                                        <th style="width: 120px;">TON</th>
+                                        <th class="pe-3">NOT</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthEntryTable" class="bg-white x-small">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                                <tfoot class="bg-light border-top x-small">
+                                    <tr class="fw-bold">
+                                        <td class="ps-3">TOPLAM</td>
+                                        <td class="text-primary" id="totalTonDisplay">0.00 Ton</td>
+                                        <td class="text-muted pe-3 text-end" id="totalLitreDisplay">0 L</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Results -->
+                    <div class="card border-0 shadow-sm p-3 rounded-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="step-num-sm">2</div>
+                            <h5 class="mb-0 fw-bold">Analiz Sonuçları</h5>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="analysis-box-sm">
+                                    <div class="lbl">Aylık Ort.</div>
+                                    <div class="val" id="resAvgMonthly">0 L</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="analysis-box-sm">
+                                    <div class="lbl">Kişi Başı</div>
+                                    <div class="val" id="resPerPerson">0.0 L</div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="analysis-box-sm d-flex justify-content-between align-items-center">
+                                    <span class="lbl mb-0">WHO Standardı:</span>
+                                    <span class="badge rounded-pill x-small" id="whoStatus">---</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 p-2 bg-light rounded-3">
+                            <label class="form-label x-small fw-bold text-muted mb-2">Tasarruf Önerileriniz</label>
+                            <input type="text" id="sug1" class="form-control form-control-sm border-0 mb-1"
+                                placeholder="Öneriniz 1...">
+                            <input type="text" id="sug2" class="form-control form-control-sm border-0"
+                                placeholder="Öneriniz 2...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Balanced Report Card -->
+            <div class="col-lg-5">
+                <div class="sticky-top" style="top: 100px;">
+                    <div id="reportCard" class="water-report-card shadow-lg rounded-4 overflow-hidden border-0">
+                        <div class="report-header p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="user-avatar-sm">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <img src="{{ url_for('static', filename='etwinning_logo.jpeg') }}" alt="" height="30"
+                                    class="report-logo" onerror="this.style.display='none'">
+                            </div>
+                            <div class="report-user-info">
+                                <h3 class="mb-0 fw-bold text-white" id="cardName">Öğrenci Adı</h3>
+                                <p class="mb-0 text-white-50 small" id="cardSchool">Okul Adı</p>
+                                <small class="text-white-50 x-small mt-1 d-block">Öğretmen: <span id="cardTeacher"
+                                        class="text-white">-</span></small>
+                            </div>
+                        </div>
+                        <div class="report-body p-4 bg-white text-dark">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="stat-box-sm text-center p-3 border rounded-4 bg-light">
+                                        <h4 class="mb-0 fw-bold text-primary" id="cardTotalTon">0.00</h4>
+                                        <p class="x-small text-muted fw-bold mb-0">Toplam Ton</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box-sm text-center p-3 border rounded-4">
+                                        <h4 class="mb-0 fw-bold" id="cardTotalLitre">0</h4>
+                                        <p class="x-small text-muted fw-bold mb-0">Toplam Litre</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box-sm text-center p-3 border rounded-4">
+                                        <h4 class="mb-0 fw-bold text-secondary" id="cardDailyL">0.0</h4>
+                                        <p class="x-small text-muted fw-bold mb-0">L/Günlük</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box-sm text-center p-3 border rounded-4">
+                                        <h4 class="mb-0 fw-bold text-success" id="cardPerPerson">0.0</h4>
+                                        <p class="x-small text-muted fw-bold mb-0">L/Kişi</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <div id="cardBadge" class="badge-who-sm shadow-sm py-2 px-3">
+                                    <i class="fas fa-check-circle me-1"></i> WHO Standardına Uygun!
+                                </div>
+                            </div>
+
+                            <div class="mt-3 p-3 rounded-3 bg-primary-soft border-start border-3 border-warning">
+                                <h6 class="fw-bold mb-2 x-small text-dark"><i
+                                        class="fas fa-award text-warning me-1"></i>Tasarruf İlkelerim:</h6>
+                                <div id="cardSug1" class="x-small text-muted mb-1">• ...</div>
+                                <div id="cardSug2" class="x-small text-muted">• ...</div>
+                            </div>
+
+                            <div class="report-footer mt-4 pt-3 text-center border-top">
+                                <p class="mb-0 x-small fw-bold text-primary">Save Water Save Nature | eTwinning 2026</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3 mb-5">
+                        <button class="btn btn-success rounded-pill fw-bold shadow py-3" id="saveBtn">
+                            <i class="fas fa-save me-2"></i> Listeye Kaydet
+                        </button>
+                        <button class="btn btn-primary rounded-pill fw-bold shadow py-3" id="downloadBtn">
+                            <i class="fas fa-camera me-2"></i> Raporu Resim Olarak İndir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+    /* Fix Navbar Conflict with Bootstrap */
+    .navbar {
+        display: block !important;
+    }
+
+    .nav-container {
+        display: flex !important;
+        justify-content: space-between !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
+
+    .nav-links {
+        gap: 2rem !important;
+    }
+
+    /* Scale-down Enhancements */
+    .x-small {
+        font-size: 0.75rem;
+    }
+
+    .bg-primary-soft {
+        background-color: rgba(79, 70, 229, 0.06);
+    }
+
+    .text-primary {
+        color: #4f46e5 !important;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .participant-item {
+        padding: 4px 10px;
+        border-radius: 50px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+    }
+
+    .avatar-mini {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.7rem;
+    }
+
+    .step-num-sm {
+        width: 32px;
+        height: 32px;
+        background: #4f46e5;
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .analysis-box-sm {
+        background: #fff;
+        padding: 0.75rem 1rem;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+    }
+
+    .analysis-box-sm .lbl {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+
+    .analysis-box-sm .val {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .water-report-card .report-header {
+        background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+        position: relative;
+    }
+
+    .user-avatar-sm {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        backdrop-filter: blur(5px);
+    }
+
+    .badge-who-sm {
+        background: #22c55e;
+        color: white;
+        border-radius: 100px;
+        font-weight: 800;
+        display: inline-block;
+        font-size: 0.85rem;
+    }
+
+    .badge-who-sm.danger {
+        background: #ef4444;
+    }
+
+    @media (max-width: 991px) {
+        .sticky-top {
+            position: static !important;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tableBody = document.getElementById('monthEntryTable');
+        const inputs = {
+            student: document.getElementById('studentName'),
+            school: document.getElementById('schoolName'),
+            teacher: document.getElementById('teacherName'),
+            familySize: document.getElementById('familySize'),
+            sug1: document.getElementById('sug1'),
+            sug2: document.getElementById('sug2')
+        };
+
+        const cardFields = {
+            name: document.getElementById('cardName'),
+            school: document.getElementById('cardSchool'),
+            teacher: document.getElementById('cardTeacher'),
+            totalTon: document.getElementById('cardTotalTon'),
+            totalLitre: document.getElementById('cardTotalLitre'),
+            dailyL: document.getElementById('cardDailyL'),
+            perPerson: document.getElementById('cardPerPerson'),
+            badge: document.getElementById('cardBadge'),
+            sug1: document.getElementById('cardSug1'),
+            sug2: document.getElementById('cardSug2')
+        };
+
+        const resultFields = {
+            totalTon: document.getElementById('totalTonDisplay'),
+            totalLitre: document.getElementById('totalLitreDisplay'),
+            resAvgMonthly: document.getElementById('resAvgMonthly'),
+            resPerPerson: document.getElementById('resPerPerson'),
+            whoStatus: document.getElementById('whoStatus')
+        };
+
+        const months = ['Ekim / Oct', 'Kasım / Nov', 'Aralık / Dec'];
+
+        months.forEach((m) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td class="ps-3 fw-bold text-muted">${m}</td>
+            <td><input type="number" step="0.01" value="0.00" class="form-control form-control-sm border-0 bg-light ton-input" data-month="${m}"></td>
+            <td class="pe-3"><input type="text" class="form-control form-control-sm border-0 bg-light note-input" placeholder="..."></td>
+        `;
+            tableBody.appendChild(row);
+        });
+
+        const calculate = () => {
+            let totalTon = 0;
+            document.querySelectorAll('.ton-input').forEach(input => totalTon += parseFloat(input.value) || 0);
+
+            const familySize = parseInt(inputs.familySize.value) || 1;
+            const totalLitre = totalTon * 1000;
+            const avgDaily = (totalLitre / 3) / 30;
+            const perPerson = avgDaily / familySize;
+
+            resultFields.totalTon.textContent = totalTon.toFixed(2) + ' Ton';
+            resultFields.totalLitre.textContent = totalLitre.toLocaleString() + ' L';
+            resultFields.resAvgMonthly.textContent = Math.round(totalLitre / 3).toLocaleString() + ' L';
+            resultFields.resPerPerson.textContent = perPerson.toFixed(1) + ' L';
+
+            const whoBadge = cardFields.badge;
+            if (perPerson === 0) {
+                resultFields.whoStatus.textContent = '---';
+                resultFields.whoStatus.className = 'badge rounded-pill bg-secondary';
+                whoBadge.innerHTML = 'Veri Bekleniyor';
+                whoBadge.className = 'badge-who-sm bg-secondary';
+            } else if (perPerson <= 50) {
+                resultFields.whoStatus.textContent = 'Uyumlu';
+                resultFields.whoStatus.className = 'badge rounded-pill bg-success';
+                whoBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> WHO Standart Uyumu';
+                whoBadge.className = 'badge-who-sm bg-success';
+            } else {
+                resultFields.whoStatus.textContent = 'Standart Dışı';
+                resultFields.whoStatus.className = 'badge rounded-pill bg-danger';
+                whoBadge.innerHTML = '<i class="fas fa-exclamation me-1"></i> Standart Dışı';
+                whoBadge.className = 'badge-who-sm bg-danger';
+            }
+
+            cardFields.name.textContent = inputs.student.value || 'Öğrenci Adı';
+            cardFields.school.textContent = inputs.school.value || 'Okul Adı';
+            cardFields.teacher.textContent = inputs.teacher.value || '-';
+            cardFields.totalTon.textContent = totalTon.toFixed(2);
+            cardFields.totalLitre.textContent = Math.round(totalLitre).toLocaleString();
+            cardFields.dailyL.textContent = avgDaily.toFixed(1);
+            cardFields.perPerson.textContent = perPerson.toFixed(1);
+            cardFields.sug1.textContent = inputs.sug1.value ? '• ' + inputs.sug1.value : '• ...';
+            cardFields.sug2.textContent = inputs.sug2.value ? '• ' + inputs.sug2.value : '• ...';
+        };
+
+        [inputs.student, inputs.school, inputs.teacher, inputs.familySize, inputs.sug1, inputs.sug2].forEach(el => el.addEventListener('input', calculate));
+        tableBody.addEventListener('input', calculate);
+
+        const schoolLogoFile = document.getElementById('schoolLogoFile');
+        const cardSchoolLogo = document.querySelector('.report-header .report-logo');
+        schoolLogoFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    cardSchoolLogo.src = event.target.result;
+                    cardSchoolLogo.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        calculate();
+
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            if (!inputs.student.value) { alert('İsim giriniz!'); return; }
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            const monthData = [];
+            document.querySelectorAll('.ton-input').forEach((input, i) => {
+                monthData.push({ month: input.dataset.month, ton: parseFloat(input.value) || 0, note: document.querySelectorAll('.note-input')[i].value });
+            });
+
+            const payload = {
+                studentName: inputs.student.value,
+                schoolName: inputs.school.value,
+                teacherName: inputs.teacher.value,
+                familySize: inputs.familySize.value,
+                totalConsumption: parseFloat(document.getElementById('totalTonDisplay').textContent),
+                monthData: monthData,
+                suggestions: [inputs.sug1.value, inputs.sug2.value]
+            };
+
+            try {
+                const response = await fetch('/api/save-water-entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const res = await response.json();
+                if (res.success) { alert('Kaydedildi!'); window.location.reload(); }
+            } catch (err) { alert('Hata oluştu.'); }
+            finally { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Kaydet'; }
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const reportElement = document.getElementById('reportCard');
+            html2canvas(reportElement, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Su_Gunlugu_${inputs.student.value || 'Raporu'}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    });
+</script>
+{% endblock %}

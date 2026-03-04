@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if current_project %}
+<div class="project-identity-header centered">
+    <div class="container">
+        <div class="identity-wrapper">
+            <div class="identity-logos">
+                {% if current_project.logo %}
+                {% set logo_sz = current_project.logo_size if current_project.logo_size else 80 %}
+                <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
+                    {% set logo_url = current_project.logo if current_project.logo.startswith('http') else
+                    url_for('static', filename='uploads/' + current_project.logo) %}
+                    <img src="{{ logo_url }}" alt="Primary Logo" class="project-identity-logo">
+                </div>
+                {% endif %}
+
+                {% if current_project.logo2 %}
+                {% set logo_sz = current_project.logo_size if current_project.logo_size else 80 %}
+                <div class="logo-area" style="--dynamic-logo-size: {{ logo_sz }}px;">
+                    {% set logo2_url = current_project.logo2 if current_project.logo2.startswith('http') else
+                    url_for('static', filename='uploads/' + current_project.logo2) %}
+                    <img src="{{ logo2_url }}" alt="Secondary Logo" class="project-identity-logo">
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="title-area">
+                <span class="identity-badge">ACTIVE PROJECT</span>
+                <h1 class="identity-name">{{ current_project.name }}</h1>
+                {% if current_project.subtitle %}
+                <p class="identity-subtitle"
+                    style="font-size: 1.1rem; font-weight: 300; margin-top: 0.25rem; color: var(--text-muted);">{{
+                    current_project.subtitle }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<section class="hero-slider">
+    <div class="slider-container">
+        {% if news_items and (news_items|selectattr('image')|list|length > 0) %}
+        {% for item in news_items if item.image %}
+        {% set slide_img_candidate = item.image or '' %}
+        {% set img_url = slide_img_candidate if slide_img_candidate.startswith('http') else (url_for('static',
+        filename='uploads/' + slide_img_candidate) if slide_img_candidate else '') %}
+        {% set slide_news_url = url_for('view_news', news_id=item.id) %}
+        <div class="slide {% if loop.first %}active{% endif %}"
+            style="--slide-bg: url('{{ img_url }}'); cursor: pointer;"
+            onclick="window.location.href='{{ slide_news_url }}';">
+            <div class="slide-overlay"></div>
+            <div class="hero-content">
+                <div class="slide-actions">
+                    <a href="{{ url_for('view_news', news_id=item.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button class="slider-nav prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+        <button class="slider-nav next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        <div class="slider-dots"></div>
+        {% elif current_project %}
+        <div class="slide active"
+            style="--bg-gradient: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)); background-color: #1e293b;">
+            <div class="hero-content">
+                <div class="slide-actions">
+                    <span class="btn btn-primary" style="cursor: default;">Welcome to {{ current_project.name }}</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="slide active">
+            <div class="hero-content text-center">
+                <h1>School Project News</h1>
+                <p>Welcome to our platform. Explore our latest projects and updates below.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if current_project and current_project.slug == 'etwinning' %}
+<section class="water-section-cta">
+    <div class="container text-center">
+        <div class="water-cta-card">
+            <div class="water-cta-content"
+                style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 1rem; padding: 3rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid rgba(14, 165, 233, 0.1);">
+                <i class="fas fa-droplet text-primary mb-3" style="font-size: 2.5rem; color: #0ea5e9 !important;"></i>
+                <h2 style="color: #0369a1; font-weight: 800;">Su Günlüğü Sayacı</h2>
+                <p style="color: #0c4a6e; opacity: 0.8;">Su tüketiminizi takip edin ve tasarruf hedeflerinize ulaşın!
+                </p>
+                <a href="{{ url_for('water_diary') }}" class="btn btn-primary btn-lg mt-3"
+                    style="background-color: #0ea5e9; border: none; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700;">
+                    <i class="fas fa-calculator me-2"></i> Günlüğü Aç
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="news-section">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-newspaper"></i>
+            All Stories & Updates
+        </h2>
+        <div class="news-grid">
+            {% for item in news_items %}
+            <article class="news-card">
+                {% if item.image %}
+                {% set card_img = item.image if (item.image and item.image.startswith('http')) else (url_for('static',
+                filename='uploads/' + item.image) if item.image else '') %}
+                <a href="{{ url_for('view_news', news_id=item.id) }}">
+                    <div class="news-image-wrapper">
+                        <img src="{{ card_img }}" alt="{{ item.title }}" class="news-image">
+                    </div>
+                </a>
+                {% endif %}
+                <div class="news-content">
+                    <span class="news-date"><i class="far fa-calendar-alt"></i> {{ item.date_posted.strftime('%B %d,
+                        %Y') }}</span>
+                    <a href="{{ url_for('view_news', news_id=item.id) }}">
+                        <h3 class="news-title">{{ item.title }}</h3>
+                    </a>
+                    <p class="news-summary">{{ (item.summary or '')|truncate(150) }}</p>
+                    <div class="news-footer">
+                        <a href="{{ url_for('view_news', news_id=item.id) }}" class="read-more">Read More <i
+                                class="fas fa-arrow-right"></i></a>
+                        {% if item.external_link %}
+                        <a href="{{ item.external_link }}" target="_blank" class="external-link"><i
+                                class="fas fa-link"></i> External Project Link</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% else %}
+            <div class="no-news-box">
+                <i class="fas fa-info-circle"></i>
+                <p>No news items have been published for this project yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% if current_project and current_project.links %}
+<section class="project-links-section">
+    <div class="container">
+        <div class="section-header-centered">
+            <h2 class="section-title text-center">
+                <i class="fas fa-link"></i>
+                Project Links
+            </h2>
+            <p class="section-subtitle">Explore more resources and external links related to this project</p>
+        </div>
+        <div class="styled-links-grid">
+            {% for link in current_project.links %}
+            <a href="{{ link.url }}" target="_blank" class="styled-link-card">
+                <div class="link-icon">
+                    <i class="fas fa-external-link-alt"></i>
+                </div>
+                <div class="link-content">
+                    <h3 class="link-title">{{ link.title }}</h3>
+                    <span class="link-url">{{ link.url|replace('https://', '')|replace('http://', '')|replace('www.',
+                        '')|truncate(40) }}</span>
+                </div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

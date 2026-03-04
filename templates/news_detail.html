@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<article class="news-detail">
+    <div class="news-header">
+        <h1 class="news-title">{{ news.title }}</h1>
+        <div class="news-meta">
+            <span class="news-date"><i class="far fa-calendar-alt"></i> {{ news.date_posted.strftime('%B %d, %Y')
+                }}</span>
+            <span class="project-tag"><i class="fas fa-project-diagram"></i> {{ news.project.name }}</span>
+        </div>
+    </div>
+
+    {% if news.image %}
+    {% set detail_img = news.image if (news.image and news.image.startswith('http')) else (url_for('static',
+    filename='uploads/' + news.image) if news.image else '') %}
+    <div class="news-cover" style="--cover-bg: url('{{ detail_img }}');">
+        <img src="{{ detail_img }}" alt="{{ news.title }}" class="news-cover-image">
+    </div>
+    {% endif %}
+
+    <div class="news-content-wrapper">
+        <p class="news-summary-text">{{ news.summary or '' }}</p>
+        <div class="news-body">
+            {{ news.content|safe }}
+        </div>
+
+        {% if news.external_link %}
+        <div class="news-links">
+            <a href="{{ news.external_link }}" target="_blank" class="btn btn-primary"><i class="fas fa-link"></i> Go to
+                External Source</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="news-navigation">
+        <a href="{{ url_for('index') }}" class="back-link"><i class="fas fa-chevron-left"></i> Back to Homepage</a>
+    </div>
+</article>
+{% endblock %}

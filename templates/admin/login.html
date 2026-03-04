@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="admin-login-section">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Sol Taraf: Tanıtım / Branding -->
+            <div class="login-brand">
+                <div class="brand-content">
+                    <div class="brand-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h2>Admin Portal</h2>
+                    <p>Manage your projects, update news, and keep the community informed. Your control center for
+                        success.</p>
+                </div>
+                <!-- Arka plan animasyonları için dekoratif öğeler -->
+                <div class="login-brand-bg-shape shape-1"></div>
+                <div class="login-brand-bg-shape shape-2"></div>
+            </div>
+
+            <!-- Sağ Taraf: Form Kısmı -->
+            <div class="login-form-container">
+                <div class="login-header">
+                    <h3>Welcome Back</h3>
+                    <p>Enter your details to access the dashboard</p>
+                </div>
+
+                <form action="" method="POST" class="modern-login-form">
+                    <div class="form-group modern-input-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="username" name="username" required placeholder="admin">
+                        </div>
+                    </div>
+
+                    <div class="form-group modern-input-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" required placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary login-btn-main">
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .admin-login-section {
+        flex: 1;
+        /* Keep it taking main space */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        background-color: #f8fafc;
+        /* Hafif eğlenceli ve modern bir arka plan motifi */
+        background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+        background-size: 24px 24px;
+        position: relative;
+    }
+
+    .login-wrapper {
+        width: 100%;
+        max-width: 900px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .login-card {
+        background: var(--card-bg);
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        display: flex;
+        overflow: hidden;
+        min-height: 500px;
+    }
+
+    /* Sol Taraf: Branding */
+    .login-brand {
+        flex: 1;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        color: white;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .brand-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .brand-content h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .brand-content p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        line-height: 1.6;
+        font-weight: 300;
+    }
+
+    .login-brand-bg-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -100px;
+    }
+
+    .shape-2 {
+        width: 400px;
+        height: 400px;
+        bottom: -150px;
+        right: -150px;
+    }
+
+    /* Sağ Taraf: Form */
+    .login-form-container {
+        flex: 1.2;
+        padding: 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white;
+    }
+
+    .login-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .login-header h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+        color: var(--text-muted);
+        font-size: 1rem;
+    }
+
+    .modern-login-form .modern-input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .modern-input-group label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-wrapper .input-icon {
+        position: absolute;
+        left: 1rem;
+        color: #94a3b8;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius-md);
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--text-main);
+        background: #f8fafc;
+        transition: all 0.3s ease;
+    }
+
+    .input-wrapper input:focus {
+        background: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    .input-wrapper input:focus+.input-icon {
+        color: var(--primary-color);
+    }
+
+    .login-btn-main {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .login-btn-main:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .login-btn-main i {
+        transition: transform 0.3s ease;
+    }
+
+    .login-btn-main:hover i {
+        transform: translateX(4px);
+    }
+
+
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .login-card {
+            flex-direction: column;
+        }
+
+        .login-brand {
+            padding: 2.5rem 1.5rem;
+            min-height: 250px;
+        }
+
+        .login-form-container {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .brand-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.75rem;
+        }
+
+        .brand-content h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}

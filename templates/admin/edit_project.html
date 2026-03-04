@@ -1,0 +1,257 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        margin-bottom: 2rem;
+        border: 1px solid #edf2f7;
+    }
+
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #2b3452;
+        font-size: 1.25rem;
+        font-weight: 600;
+        border-bottom: 2px solid #edf2f7;
+        padding-bottom: 0.75rem;
+    }
+
+    .file-upload-box {
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .file-upload-box:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+
+    .custom-name-field {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .tox-tinymce {
+        border-radius: 8px !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    .current-file {
+        margin-top: 1rem;
+        background: #e2e8f0;
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #334155;
+    }
+
+    /* Hide TinyMCE API Key Warning */
+    .tox-notifications-container {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-header"
+    style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+    <div>
+        <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 0.5rem;"><i class="fas fa-project-diagram"
+                style="color: #3b82f6; margin-right: 10px;"></i> {% if project %}Edit Project{% else %}Create New
+            Project{% endif %}</h2>
+        <p class="text-muted" style="font-size: 1.1rem;">Configure your project details and branding.</p>
+    </div>
+</div>
+
+<form action="" method="POST" enctype="multipart/form-data" class="admin-form" id="projectForm">
+
+    <div class="form-section">
+        <h3><i class="fas fa-info-circle" style="color:#64748b; margin-right:8px;"></i> Basic Information</h3>
+        <div class="form-group">
+            <label for="name" style="font-weight: 600;">Project Name <span class="text-danger">*</span></label>
+            <input type="text" id="name" name="name" value="{{ project.name if project else '' }}" required
+                placeholder="e.g., Sustainable Campus" style="font-size: 1.1rem; padding: 0.75rem;">
+        </div>
+
+        <div class="form-group">
+            <label for="subtitle" style="font-weight: 600;">Subtitle</label>
+            <input type="text" id="subtitle" name="subtitle" value="{{ project.subtitle if project else '' }}"
+                placeholder="A short catchy phrase">
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3><i class="fas fa-align-left" style="color:#64748b; margin-right:8px;"></i> Detailed Description</h3>
+        <p class="text-muted" style="margin-bottom: 1rem; font-size: 0.9rem;">What is this project about? Provide full
+            details. Format your text as you like.</p>
+        <div class="form-group">
+            <textarea id="description" name="description" rows="15"
+                placeholder="Detailed multi-paragraph explanation...">{{ project.description if project else '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3><i class="fas fa-palette" style="color:#64748b; margin-right:8px;"></i> Main Branding (Logos)</h3>
+
+        <div class="form-row" style="align-items: flex-start;">
+            <div class="form-group" style="flex: 1;">
+                <label for="logo" style="font-weight: 600;">Primary Logo</label>
+                <div class="file-upload-box">
+                    <i class="fas fa-cloud-upload-alt"
+                        style="font-size: 2rem; color: #94a3b8; margin-bottom: 0.5rem;"></i>
+                    <input type="file" id="logo" name="logo" accept="image/*"
+                        style="display: block; width: 100%; margin-top: 10px;"
+                        onchange="handleFileSelect('logo', 'logo_name', 'logoNameRequired')">
+                    {% if project and project.logo %}
+                    <p class="current-file"><i class="fas fa-file-image"></i> Current: {{ project.logo }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group custom-name-field" style="flex: 1;">
+                <label for="logo_name" style="font-weight: 600;">New Primary Logo Name <span class="text-danger"
+                        id="logoNameRequired" style="display: none;">*</span></label>
+                <input type="text" id="logo_name" name="logo_name" placeholder="e.g., primary-logo"
+                    title="Only use letters, numbers, and dashes">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem;"><i class="fas fa-info-circle"></i>
+                    Provide a clear name to rename the file.</small>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 2rem 0;">
+
+        <div class="form-row" style="align-items: flex-start;">
+            <div class="form-group" style="flex: 1;">
+                <label for="logo2" style="font-weight: 600;">Secondary Logo (Optional)</label>
+                <div class="file-upload-box">
+                    <i class="fas fa-cloud-upload-alt"
+                        style="font-size: 2rem; color: #94a3b8; margin-bottom: 0.5rem;"></i>
+                    <input type="file" id="logo2" name="logo2" accept="image/*"
+                        style="display: block; width: 100%; margin-top: 10px;"
+                        onchange="handleFileSelect('logo2', 'logo2_name', 'logo2NameRequired')">
+                    {% if project and project.logo2 %}
+                    <p class="current-file"><i class="fas fa-file-image"></i> Current: {{ project.logo2 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group custom-name-field" style="flex: 1;">
+                <label for="logo2_name" style="font-weight: 600;">New Secondary Logo Name <span class="text-danger"
+                        id="logo2NameRequired" style="display: none;">*</span></label>
+                <input type="text" id="logo2_name" name="logo2_name" placeholder="e.g., partner-logo"
+                    title="Only use letters, numbers, and dashes">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem;"><i class="fas fa-info-circle"></i>
+                    Provide a clear name to rename the file.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Settings -->
+    <div class="form-section">
+        <h3><i class="fas fa-sliders-h" style="color:#64748b; margin-right:8px;"></i> Visual Settings</h3>
+        <div class="form-row" style="align-items: center; margin-top: 1rem;">
+            <div class="form-group" style="flex: 1;">
+                <label for="logo_size" style="font-weight: 600;">Logo Size (Desktop Navbar)</label>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                    <input type="range" id="logo_size" name="logo_size" min="40" max="150"
+                        value="{{ project.logo_size if project and project.logo_size else 80 }}"
+                        oninput="document.getElementById('logoSizeVal').innerText = this.value + 'px'"
+                        style="flex: 1; cursor: pointer;">
+                    <span id="logoSizeVal" style="font-weight: 700; color: #3b82f6; width: 60px;">{{ project.logo_size
+                        if project and project.logo_size else 80 }}px</span>
+                </div>
+                <small class="text-muted"><i class="fas fa-info-circle"></i> Adjust how large the project logos appear
+                    on the main site (Default: 80px).</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <button type="submit" class="btn btn-primary"
+            style="padding: 0.75rem 2rem; font-size: 1.1rem; border-radius: 8px;"><i class="fas fa-save"
+                style="margin-right:8px;"></i> Save Project</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline"
+            style="padding: 0.75rem 2rem; font-size: 1.1rem; border-radius: 8px;"><i class="fas fa-times"
+                style="margin-right:8px;"></i> Cancel</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<!-- TinyMCE CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        height: 400,
+        menubar: false,
+        branding: false,
+        placeholder: "Write your project description here...",
+        setup: function (editor) {
+            editor.on('change', function () {
+                editor.save(); // Save content to textarea
+            });
+        }
+    });
+
+    function handleFileSelect(fileInputId, nameInputId, requiredId) {
+        const fileInput = document.getElementById(fileInputId);
+        const nameInput = document.getElementById(nameInputId);
+        const requiredMarker = document.getElementById(requiredId);
+
+        if (fileInput.files.length > 0) {
+            nameInput.setAttribute('required', 'required');
+            requiredMarker.style.display = 'inline';
+
+            // Generate a suggestion based on the project name if empty
+            const titleInput = document.getElementById('name').value;
+            if (!nameInput.value && titleInput) {
+                let suffix = '';
+                if (fileInputId === 'logo') suffix = '-logo';
+                if (fileInputId === 'logo2') suffix = '-logo-2';
+
+                const slug = titleInput.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                nameInput.value = slug + suffix;
+            }
+            nameInput.focus();
+        } else {
+            nameInput.removeAttribute('required');
+            requiredMarker.style.display = 'none';
+        }
+    }
+
+    // Client-side validation on form submit as a fallback
+    document.getElementById('projectForm').addEventListener('submit', function (e) {
+        const checks = [
+            { file: 'logo', name: 'logo_name' },
+            { file: 'logo2', name: 'logo2_name' }
+        ];
+
+        for (let check of checks) {
+            let fileInput = document.getElementById(check.file);
+            let nameInput = document.getElementById(check.name);
+            if (fileInput.files.length > 0 && !nameInput.value.trim()) {
+                e.preventDefault();
+                alert('Lütfen yüklenen görsel için yeni bir dosya adı girin. (' + check.file + ')');
+                nameInput.focus();
+                return;
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="admin-header">
+    <h2>Project Dashboard</h2>
+    <p class="text-muted">Manage your school projects and news feeds.</p>
+</div>
+
+<div class="dashboard-grid">
+    {% for project in projects %}
+    <div class="admin-panel-card {% if project.is_default %}is-active-project{% endif %}">
+        {% if project.is_default %}
+        <div class="active-label">Live</div>
+        {% endif %}
+
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ project.name }}</h3>
+                <span class="text-muted" style="font-size: 0.85rem;">{{ project.news_items|length }} Published News
+                    Items</span>
+            </div>
+            <div class="card-actions">
+                <a href="{{ url_for('edit_project', id=project.id) }}" class="btn btn-sm btn-outline"
+                    title="Edit Properties"><i class="fas fa-edit"></i></a>
+                {% if not project.is_default %}
+                <a href="{{ url_for('set_default_project', id=project.id) }}" class="btn btn-sm btn-success"
+                    title="Set as Main Landing Project"><i class="fas fa-satellite-dish"></i></a>
+                {% endif %}
+                <a href="{{ url_for('delete_project', id=project.id) }}" class="btn btn-sm btn-danger"
+                    onclick="return confirm('Are you sure? This deletes the project and ALL its news permanently.')"
+                    title="Delete Project"><i class="fas fa-trash-alt"></i></a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4 style="margin: 0; font-size: 1rem; color: var(--admin-sidebar);">Recent News</h4>
+                <a href="{{ url_for('add_news', project_id=project.id) }}" class="btn btn-sm btn-primary"><i
+                        class="fas fa-plus"></i> Add Article</a>
+            </div>
+
+            {% if project.news_items %}
+            <table class="admin-news-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Image</th>
+                        <th style="min-width: 250px;">Title</th>
+                        <th style="width: 120px;">Date</th>
+                        <th style="text-align: right; width: 100px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for news in project.news_items %}
+                    <tr>
+                        <td style="padding: 1rem 0.5rem;">
+                            {% if news.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + news.image) if not news.image.startswith('http') else news.image }}"
+                                style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+                            {% else %}
+                            <div
+                                style="width: 65px; height: 65px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 1px dashed #cbd5e1;">
+                                <i class="fas fa-image" style="font-size: 1.5rem;"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: 600; font-size: 0.95rem; color: #1e293b;">{{ news.title|truncate(60) }}
+                        </td>
+                        <td style="color: #64748b; white-space: nowrap; font-size: 0.85rem;">{{
+                            news.date_posted.strftime('%d/%m/%Y') }}</td>
+                        <td class="news-actions" style="white-space: nowrap;">
+                            <a href="{{ url_for('edit_news', id=news.id) }}" class="text-primary"
+                                style="margin-right: 15px; font-size: 1.25rem;" title="Edit"><i
+                                    class="fas fa-edit"></i></a>
+                            <a href="{{ url_for('delete_news', id=news.id) }}" class="text-danger"
+                                style="font-size: 1.25rem;" onclick="return confirm('Delete this news article?')"
+                                title="Delete"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div
+                style="padding: 2rem; text-align: center; background: #f8fafc; border-radius: 0.5rem; border: 1px dashed #cbd5e1; margin-top: 1rem;">
+                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">No news published yet.</p>
+            </div>
+            {% endif %}
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; margin-bottom: 1rem;">
+                <h4 style="margin: 0; font-size: 1rem; color: var(--admin-sidebar);">Project Links</h4>
+                <a href="{{ url_for('add_link', project_id=project.id) }}" class="btn btn-sm btn-primary"><i
+                        class="fas fa-link"></i> Add Link</a>
+            </div>
+
+            {% if project.links %}
+            <table class="admin-news-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>URL</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in project.links %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ link.title|truncate(35) }}</td>
+                        <td style="color: #64748b;"><a href="{{ link.url }}" target="_blank">{{ link.url|truncate(40)
+                                }}</a></td>
+                        <td class="news-actions">
+                            <a href="{{ url_for('delete_link', id=link.id) }}" class="text-danger"
+                                onclick="return confirm('Delete this link?')"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div
+                style="padding: 1.5rem; text-align: center; background: #f8fafc; border-radius: 0.5rem; border: 1px dashed #cbd5e1; margin-top: 1rem;">
+                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">No links added yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div
+        style="grid-column: 1 / -1; padding: 4rem; text-align: center; background: white; border-radius: 1rem; border: 2px dashed #cbd5e1;">
+        <i class="fas fa-folder-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+        <h3 style="margin-bottom: 0.5rem;">No Projects Found</h3>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">You haven't created any school projects yet. Start by
+            creating your first one!</p>
+        <a href="{{ url_for('new_project') }}" class="btn btn-primary"><i class="fas fa-folder-plus"></i> Create New
+            Project</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

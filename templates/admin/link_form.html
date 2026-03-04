@@ -1,0 +1,27 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="admin-header">
+    <h2>Add New Link</h2>
+    <p class="text-muted">Create a new link for {{ project.name }}</p>
+</div>
+
+<div class="admin-form-section">
+    <form class="admin-form" method="POST" action="{{ url_for('add_link', project_id=project.id) }}">
+        <div class="form-group">
+            <label for="title">Link Title</label>
+            <input type="text" id="title" name="title" required placeholder="Ex: Project Details">
+        </div>
+
+        <div class="form-group">
+            <label for="url">URL Target</label>
+            <input type="url" id="url" name="url" required placeholder="https://example.com/project">
+        </div>
+
+        <div class="form-actions" style="margin-top: 2rem;">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Link</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
