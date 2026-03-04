@@ -20,7 +20,7 @@
     {% endif %}
 
     <div class="news-content-wrapper">
-        <p class="news-summary-text">{{ news.summary or '' }}</p>
+        <p class="news-summary-text">{{ (news.summary or '')|safe }}</p>
         <div class="news-body">
             {{ news.content|safe }}
         </div>

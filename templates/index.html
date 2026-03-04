@@ -124,7 +124,7 @@
                     <a href="{{ url_for('view_news', news_id=item.id) }}">
                         <h3 class="news-title">{{ item.title }}</h3>
                     </a>
-                    <p class="news-summary">{{ (item.summary or '')|truncate(150) }}</p>
+                    <p class="news-summary">{{ (item.summary or '')|truncate(150)|safe }}</p>
                     <div class="news-footer">
                         <a href="{{ url_for('view_news', news_id=item.id) }}" class="read-more">Read More <i
                                 class="fas fa-arrow-right"></i></a>
