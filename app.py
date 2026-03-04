@@ -16,8 +16,12 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Veritabanı Yolu (Absolute Path) - Disk I/O ve no such table hatalarını çözmek için:
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'projects.db')
+
     # Ensure Instance & Upload folders exist
-    os.makedirs(app.config['INSTANCE_PATH'], exist_ok=True)
+    os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # Initialize Extensions
