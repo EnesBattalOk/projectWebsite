@@ -30,9 +30,84 @@
             <h1 class="identity-name" style="margin-top: 0.25rem;">{{ current_project.name|safe }}</h1>
 
             {% if current_project.subtitle %}
-            <p class="identity-subtitle"
-                style="font-size: 1.1rem; font-weight: 300; margin-top: 0.25rem; color: var(--text-muted);">{{
-                current_project.subtitle }}</p>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+
+                .elegant-slogan-container {
+                    margin-top: 1rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                }
+
+                .elegant-slogan {
+                    font-family: 'Caveat', cursive;
+                    font-size: 2.0rem;
+                    /* Küçültüldü */
+                    color: #1e1b4b;
+                    margin: 0;
+                    padding: 0 1rem;
+                    position: relative;
+                    letter-spacing: 0.5px;
+                    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.04);
+                    display: inline-block;
+                    transition: transform 0.3s ease;
+                }
+
+                .elegant-slogan:hover {
+                    transform: scale(1.02);
+                }
+
+                .slogan-divider {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: 15px;
+                    opacity: 1;
+                }
+
+                .slogan-divider::before,
+                .slogan-divider::after {
+                    content: '';
+                    height: 2px;
+                    width: 150px;
+                    /* Daha uzun yapıldı */
+                    margin: 0 15px;
+                }
+
+                .slogan-divider::before {
+                    /* Sola doğru şeffaflaşan gradient (kaybolan etki) */
+                    background: linear-gradient(to left, #4f46e5, transparent);
+                    box-shadow: 2px 0 8px #4f46e5;
+                    /* Hafif neon parlaması */
+                }
+
+                .slogan-divider::after {
+                    /* Sağa doğru şeffaflaşan gradient */
+                    background: linear-gradient(to right, #4f46e5, transparent);
+                    box-shadow: -2px 0 8px #4f46e5;
+                }
+
+                .slogan-divider i {
+                    color: #4f46e5;
+                    /* Neon parlak mor */
+                    font-size: 1.2rem;
+                    text-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 15px rgba(79, 70, 229, 0.2);
+                    /* Gerçekçi neon hissi */
+                }
+
+                @media (max-width: 768px) {
+                    .elegant-slogan {
+                        font-size: 1.5rem;
+                        /* Mobilde de küçültüldü */
+                    }
+                }
+            </style>
+            <div class="elegant-slogan-container">
+                <p class="identity-subtitle elegant-slogan">" {{ current_project.subtitle }} "</p>
+                <div class="slogan-divider"><i class="fas fa-feather-alt"></i></div>
+            </div>
             {% endif %}
 
         </div>
