@@ -105,36 +105,36 @@
                     <div class="card border-0 shadow-sm p-3 rounded-4">
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <div class="step-num-sm">2</div>
-                            <h5 class="mb-0 fw-bold">Analiz Sonuçları</h5>
+                            <h5 class="mb-0 fw-bold">Analysis Results</h5>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-6">
                                 <div class="analysis-box-sm">
-                                    <div class="lbl">Aylık Ort.</div>
+                                    <div class="lbl">Monthly Avg.</div>
                                     <div class="val" id="resAvgMonthly">0 L</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="analysis-box-sm">
-                                    <div class="lbl">Kişi Başı</div>
+                                    <div class="lbl">Per Person</div>
                                     <div class="val" id="resPerPerson">0.0 L</div>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="analysis-box-sm d-flex justify-content-between align-items-center">
-                                    <span class="lbl mb-0">WHO Standardı:</span>
+                                    <span class="lbl mb-0">WHO Standard:</span>
                                     <span class="badge rounded-pill x-small" id="whoStatus">---</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-3 p-2 bg-light rounded-3">
-                            <label class="form-label x-small fw-bold text-muted mb-2">Tasarruf Önerileriniz</label>
+                            <label class="form-label x-small fw-bold text-muted mb-2">Saving Suggestions</label>
                             <input type="text" id="sug1" class="form-control form-control-sm border-0 mb-1"
-                                placeholder="Öneriniz 1...">
+                                placeholder="Suggestion 1...">
                             <input type="text" id="sug2" class="form-control form-control-sm border-0"
-                                placeholder="Öneriniz 2...">
+                                placeholder="Suggestion 2...">
                         </div>
                     </div>
                 </div>
@@ -153,9 +153,9 @@
                                     class="report-logo" onerror="this.style.display='none'">
                             </div>
                             <div class="report-user-info">
-                                <h3 class="mb-0 fw-bold text-white" id="cardName">Öğrenci Adı</h3>
-                                <p class="mb-0 text-white-50 small" id="cardSchool">Okul Adı</p>
-                                <small class="text-white-50 x-small mt-1 d-block">Öğretmen: <span id="cardTeacher"
+                                <h3 class="mb-0 fw-bold text-white" id="cardName">Student Name</h3>
+                                <p class="mb-0 text-white-50 small" id="cardSchool">School Name</p>
+                                <small class="text-white-50 x-small mt-1 d-block">Teacher: <span id="cardTeacher"
                                         class="text-white">-</span></small>
                             </div>
                         </div>
@@ -164,38 +164,38 @@
                                 <div class="col-6">
                                     <div class="stat-box-sm text-center p-3 border rounded-4 bg-light">
                                         <h4 class="mb-0 fw-bold text-primary" id="cardTotalTon">0.00</h4>
-                                        <p class="x-small text-muted fw-bold mb-0">Toplam Ton</p>
+                                        <p class="x-small text-muted fw-bold mb-0">Total Tons</p>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-box-sm text-center p-3 border rounded-4">
                                         <h4 class="mb-0 fw-bold" id="cardTotalLitre">0</h4>
-                                        <p class="x-small text-muted fw-bold mb-0">Toplam Litre</p>
+                                        <p class="x-small text-muted fw-bold mb-0">Total Liters</p>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-box-sm text-center p-3 border rounded-4">
                                         <h4 class="mb-0 fw-bold text-secondary" id="cardDailyL">0.0</h4>
-                                        <p class="x-small text-muted fw-bold mb-0">L/Günlük</p>
+                                        <p class="x-small text-muted fw-bold mb-0">L/Daily</p>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-box-sm text-center p-3 border rounded-4">
                                         <h4 class="mb-0 fw-bold text-success" id="cardPerPerson">0.0</h4>
-                                        <p class="x-small text-muted fw-bold mb-0">L/Kişi</p>
+                                        <p class="x-small text-muted fw-bold mb-0">L/Person</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="text-center mt-3">
                                 <div id="cardBadge" class="badge-who-sm shadow-sm py-2 px-3">
-                                    <i class="fas fa-check-circle me-1"></i> WHO Standardına Uygun!
+                                    <i class="fas fa-check-circle me-1"></i> Meets WHO Standard!
                                 </div>
                             </div>
 
                             <div class="mt-3 p-3 rounded-3 bg-primary-soft border-start border-3 border-warning">
                                 <h6 class="fw-bold mb-2 x-small text-dark"><i
-                                        class="fas fa-award text-warning me-1"></i>Tasarruf İlkelerim:</h6>
+                                        class="fas fa-award text-warning me-1"></i>My Saving Principles:</h6>
                                 <div id="cardSug1" class="x-small text-muted mb-1">• ...</div>
                                 <div id="cardSug2" class="x-small text-muted">• ...</div>
                             </div>
@@ -208,10 +208,10 @@
 
                     <div class="d-grid gap-2 mt-3 mb-5">
                         <button class="btn btn-success rounded-pill fw-bold shadow py-3" id="saveBtn">
-                            <i class="fas fa-save me-2"></i> Listeye Kaydet
+                            <i class="fas fa-save me-2"></i> Save to List
                         </button>
                         <button class="btn btn-primary rounded-pill fw-bold shadow py-3" id="downloadBtn">
-                            <i class="fas fa-camera me-2"></i> Raporu Resim Olarak İndir
+                            <i class="fas fa-camera me-2"></i> Download Report as Image
                         </button>
                     </div>
                 </div>
@@ -387,7 +387,7 @@
             whoStatus: document.getElementById('whoStatus')
         };
 
-        const months = ['Ekim / Oct', 'Kasım / Nov', 'Aralık / Dec'];
+        const months = ['October', 'November', 'December'];
 
         months.forEach((m) => {
             const row = document.createElement('tr');
@@ -417,22 +417,22 @@
             if (perPerson === 0) {
                 resultFields.whoStatus.textContent = '---';
                 resultFields.whoStatus.className = 'badge rounded-pill bg-secondary';
-                whoBadge.innerHTML = 'Veri Bekleniyor';
+                whoBadge.innerHTML = 'Waiting for Data';
                 whoBadge.className = 'badge-who-sm bg-secondary';
             } else if (perPerson <= 50) {
-                resultFields.whoStatus.textContent = 'Uyumlu';
+                resultFields.whoStatus.textContent = 'Compliant';
                 resultFields.whoStatus.className = 'badge rounded-pill bg-success';
-                whoBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> WHO Standart Uyumu';
+                whoBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> WHO Standard Compliance';
                 whoBadge.className = 'badge-who-sm bg-success';
             } else {
-                resultFields.whoStatus.textContent = 'Standart Dışı';
+                resultFields.whoStatus.textContent = 'Non-Standard';
                 resultFields.whoStatus.className = 'badge rounded-pill bg-danger';
-                whoBadge.innerHTML = '<i class="fas fa-exclamation me-1"></i> Standart Dışı';
+                whoBadge.innerHTML = '<i class="fas fa-exclamation me-1"></i> Non-Standard';
                 whoBadge.className = 'badge-who-sm bg-danger';
             }
 
-            cardFields.name.textContent = inputs.student.value || 'Öğrenci Adı';
-            cardFields.school.textContent = inputs.school.value || 'Okul Adı';
+            cardFields.name.textContent = inputs.student.value || 'Student Name';
+            cardFields.school.textContent = inputs.school.value || 'School Name';
             cardFields.teacher.textContent = inputs.teacher.value || '-';
             cardFields.totalTon.textContent = totalTon.toFixed(2);
             cardFields.totalLitre.textContent = Math.round(totalLitre).toLocaleString();
@@ -462,7 +462,7 @@
         calculate();
 
         document.getElementById('saveBtn').addEventListener('click', async () => {
-            if (!inputs.student.value) { alert('İsim giriniz!'); return; }
+            if (!inputs.student.value) { alert('Please enter a name!'); return; }
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -485,16 +485,16 @@
             try {
                 const response = await fetch('/api/save-water-entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const res = await response.json();
-                if (res.success) { alert('Kaydedildi!'); window.location.reload(); }
-            } catch (err) { alert('Hata oluştu.'); }
-            finally { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Kaydet'; }
+                if (res.success) { alert('Saved!'); window.location.reload(); }
+            } catch (err) { alert('An error occurred.'); }
+            finally { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Save'; }
         });
 
         document.getElementById('downloadBtn').addEventListener('click', () => {
             const reportElement = document.getElementById('reportCard');
             html2canvas(reportElement, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `Su_Gunlugu_${inputs.student.value || 'Raporu'}.png`;
+                link.download = `Water_Diary_${inputs.student.value || 'Report'}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
