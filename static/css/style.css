@@ -75,6 +75,7 @@ a {
 }
 
 .nav-logo {
+    text-decoration: none !important;
     display: flex;
     align-items: center;
     gap: 0.75rem;
