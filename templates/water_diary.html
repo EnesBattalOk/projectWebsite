@@ -13,13 +13,13 @@
                         onerror="this.style.display='none'">
                     <h2 class="fw-bold text-dark mb-0">Save Water Save Nature</h2>
                 </div>
-                <p class="text-muted small mb-3">Bill Data Assistance | eTwinning Su Tasarrufu Etkinliği</p>
+                <p class="text-muted small mb-3">Bill Data Assistance | eTwinning Water Saving Activity</p>
 
                 <div class="participants-strip p-2 bg-white shadow-sm rounded-pill border mx-auto"
                     style="max-width: 800px;">
                     <div class="d-flex align-items-center gap-3 px-3 overflow-auto scrollbar-hide text-nowrap">
                         <div class="fw-bold text-primary x-small border-end pe-3"><i class="fas fa-users me-2"></i>
-                            KATILIMCILAR</div>
+                            PARTICIPANTS</div>
                         {% for entry in entries[:10] %}
                         <div class="d-flex align-items-center gap-2 participant-item">
                             <div class="avatar-mini">{{ entry.student_name[0]|upper }}</div>
@@ -28,7 +28,7 @@
                                 }}T</span>
                         </div>
                         {% else %}
-                        <small class="text-muted x-small">Henüz katılım yok.</small>
+                        <small class="text-muted x-small">No participants yet.</small>
                         {% endfor %}
                     </div>
                 </div>
@@ -42,36 +42,36 @@
                     <div class="card border-0 shadow-sm mb-3 p-3 rounded-4">
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <div class="step-num-sm">1</div>
-                            <h5 class="mb-0 fw-bold">Tüketim Verileri</h5>
+                            <h5 class="mb-0 fw-bold">Consumption Data</h5>
                         </div>
 
                         <div class="student-info-grid mb-3">
                             <div class="row g-2">
                                 <div class="col-md-6 text-start">
-                                    <label class="form-label x-small fw-bold text-muted mb-1">Öğrenci Adı Soyadı</label>
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Student Full Name</label>
                                     <input type="text" id="studentName"
-                                        class="form-control form-control-sm bg-light border-0" placeholder="Adınız..."
-                                        required>
+                                        class="form-control form-control-sm bg-light border-0"
+                                        placeholder="Your Name..." required>
                                 </div>
                                 <div class="col-md-6 text-start">
-                                    <label class="form-label x-small fw-bold text-muted mb-1">Okul Adı</label>
+                                    <label class="form-label x-small fw-bold text-muted mb-1">School Name</label>
                                     <input type="text" id="schoolName"
                                         class="form-control form-control-sm bg-light border-0"
-                                        placeholder="Okulunuz...">
+                                        placeholder="Your School...">
                                 </div>
                                 <div class="col-md-4 text-start">
-                                    <label class="form-label x-small fw-bold text-muted mb-1">Öğretmen Adı</label>
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Teacher Name</label>
                                     <input type="text" id="teacherName"
                                         class="form-control form-control-sm bg-light border-0"
-                                        placeholder="Öğretmeniniz...">
+                                        placeholder="Your Teacher...">
                                 </div>
                                 <div class="col-md-3 text-start">
-                                    <label class="form-label x-small fw-bold text-muted mb-1">Kişi Sayısı</label>
+                                    <label class="form-label x-small fw-bold text-muted mb-1">Family Size</label>
                                     <input type="number" id="familySize"
                                         class="form-control form-control-sm bg-light border-0" value="4" min="1">
                                 </div>
                                 <div class="col-md-5 text-start">
-                                    <label class="form-label x-small fw-bold text-muted mb-1">Okul Logosu</label>
+                                    <label class="form-label x-small fw-bold text-muted mb-1">School Logo</label>
                                     <input type="file" id="schoolLogoFile"
                                         class="form-control form-control-sm bg-light border-0" accept="image/*">
                                 </div>
@@ -82,9 +82,9 @@
                             <table class="table table-sm table-hover mb-0 align-middle">
                                 <thead class="table-dark x-small">
                                     <tr>
-                                        <th class="ps-3 py-2">DÖNEM</th>
-                                        <th style="width: 120px;">TON</th>
-                                        <th class="pe-3">NOT</th>
+                                        <th class="ps-3 py-2">PERIOD</th>
+                                        <th style="width: 120px;">TONS</th>
+                                        <th class="pe-3">NOTE</th>
                                     </tr>
                                 </thead>
                                 <tbody id="monthEntryTable" class="bg-white x-small">
@@ -92,8 +92,8 @@
                                 </tbody>
                                 <tfoot class="bg-light border-top x-small">
                                     <tr class="fw-bold">
-                                        <td class="ps-3">TOPLAM</td>
-                                        <td class="text-primary" id="totalTonDisplay">0.00 Ton</td>
+                                        <td class="ps-3">TOTAL</td>
+                                        <td class="text-primary" id="totalTonDisplay">0.00 Tons</td>
                                         <td class="text-muted pe-3 text-end" id="totalLitreDisplay">0 L</td>
                                     </tr>
                                 </tfoot>
