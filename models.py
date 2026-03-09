@@ -56,13 +56,13 @@ class Visitor(db.Model):
 class SiteVisit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     visitor_id = db.Column(db.Integer, db.ForeignKey('visitor.id'), nullable=False)
-    date_visited = db.Column(db.Date, nullable=False, default=datetime.utcnow().date)
+    date_visited = db.Column(db.Date, nullable=False, default=lambda: datetime.utcnow().date())
 
 class NewsView(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     news_id = db.Column(db.Integer, db.ForeignKey('news.id'), nullable=False)
     visitor_id = db.Column(db.Integer, db.ForeignKey('visitor.id'), nullable=False)
-    date_viewed = db.Column(db.Date, nullable=False, default=datetime.utcnow().date)
+    date_viewed = db.Column(db.Date, nullable=False, default=lambda: datetime.utcnow().date())
 
 class WaterSavingEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,7 +1,7 @@
 import os
 import json
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -109,9 +109,54 @@ def create_app(config_class=Config):
     def admin_statistics():
         today = datetime.utcnow().date()
         daily_visitors = db.session.query(func.count(func.distinct(SiteVisit.visitor_id))).filter_by(date_visited=today).scalar() or 0
+        
+        this_week = today - timedelta(days=today.weekday())
+        weekly_visitors = db.session.query(func.count(func.distinct(SiteVisit.visitor_id))).filter(SiteVisit.date_visited >= this_week).scalar() or 0
+        
         this_month = today.replace(day=1)
         monthly_visitors = db.session.query(func.count(func.distinct(SiteVisit.visitor_id))).filter(SiteVisit.date_visited >= this_month).scalar() or 0
+        
+        this_year = today.replace(month=1, day=1)
+        yearly_visitors = db.session.query(func.count(func.distinct(SiteVisit.visitor_id))).filter(SiteVisit.date_visited >= this_year).scalar() or 0
+        
         total_visitors = Visitor.query.count() or 0
+
+        # Build Historical Trend Data
+        all_visits = db.session.query(SiteVisit.visitor_id, SiteVisit.date_visited).all()
+        
+        dates_7 = [today - timedelta(days=i) for i in range(6, -1, -1)]
+        daily_labels = [d.strftime("%b %d") for d in dates_7]
+        daily_data = [len(set(v[0] for v in all_visits if v[1] == d)) for d in dates_7]
+
+        weekly_labels, weekly_data = [], []
+        for i in range(3, -1, -1):
+            w_start = this_week - timedelta(weeks=i)
+            w_end = w_start + timedelta(days=6)
+            weekly_labels.append(f"{w_start.strftime('%b %d')} - {w_end.strftime('%b %d')}")
+            weekly_data.append(len(set(v[0] for v in all_visits if w_start <= v[1] <= w_end)))
+
+        monthly_labels, monthly_data = [], []
+        for i in range(5, -1, -1):
+            t_month = today.month - i
+            t_year = today.year
+            while t_month <= 0:
+                t_month += 12
+                t_year -= 1
+            monthly_labels.append(datetime(t_year, t_month, 1).strftime("%b %Y"))
+            monthly_data.append(len(set(v[0] for v in all_visits if v[1].year == t_year and v[1].month == t_month)))
+
+        yearly_labels, yearly_data = [], []
+        for i in range(4, -1, -1):
+            t_year = today.year - i
+            yearly_labels.append(str(t_year))
+            yearly_data.append(len(set(v[0] for v in all_visits if v[1].year == t_year)))
+
+        trends = {
+            'daily': {'labels': daily_labels, 'data': daily_data},
+            'weekly': {'labels': weekly_labels, 'data': weekly_data},
+            'monthly': {'labels': monthly_labels, 'data': monthly_data},
+            'yearly': {'labels': yearly_labels, 'data': yearly_data}
+        }
 
         countries = db.session.query(Visitor.country, func.count(Visitor.id)).group_by(Visitor.country).order_by(func.count(Visitor.id).desc()).all()
         country_labels = [c[0] for c in countries]
@@ -122,8 +167,8 @@ def create_app(config_class=Config):
         ).join(News, Project.id == News.project_id).outerjoin(NewsView, News.id == NewsView.news_id).group_by(News.id).order_by(db.text('views DESC')).all()
 
         return render_template('admin/statistics.html', 
-            daily=daily_visitors, monthly=monthly_visitors, yearly=0, total=total_visitors,
-            country_labels=country_labels, country_data=country_data, news_views=news_views
+            daily=daily_visitors, weekly=weekly_visitors, monthly=monthly_visitors, yearly=yearly_visitors, total=total_visitors,
+            trends=trends, country_labels=country_labels, country_data=country_data, news_views=news_views
         )
 
     @app.route('/admin/project/new', methods=['GET', 'POST'])
@@ -247,21 +292,47 @@ def create_app(config_class=Config):
 
     @app.route('/water-diary')
     def water_diary():
-        entries = WaterSavingEntry.query.order_by(WaterSavingEntry.created_at.desc()).limit(20).all()
+        entries = WaterSavingEntry.query.order_by(WaterSavingEntry.created_at.desc()).all()
         return render_template('water_diary.html', entries=entries)
 
     @app.route('/api/save-water-entry', methods=['POST'])
     def save_water_entry():
         try:
             data = request.get_json()
+            student_name = data.get('studentName', 'Anonymous').strip()
+            total_consumption = float(data.get('totalConsumption', 0))
+            school_name = data.get('schoolName', '').strip()
+            teacher_name = data.get('teacherName', '').strip()
+            family_size = int(data.get('familySize', 4))
+            month_data = json.dumps(data.get('monthData', []))
+            suggestions = json.dumps(data.get('suggestions', []))
+
+            # 1. Check for empty/anonymous entry
+            if student_name == 'Anonymous' and total_consumption == 0:
+                return jsonify({'success': False, 'message': 'Empty entries are not allowed.'}), 400
+
+            # 2. Check for exact duplicates
+            existing_entry = WaterSavingEntry.query.filter_by(
+                student_name=student_name,
+                school_name=school_name,
+                teacher_name=teacher_name,
+                family_size=family_size,
+                total_consumption=total_consumption,
+                month_data=month_data,
+                suggestions=suggestions
+            ).first()
+
+            if existing_entry:
+                return jsonify({'success': False, 'message': 'This exact entry already exists.'}), 400
+
             entry = WaterSavingEntry(
-                student_name=data.get('studentName', 'Anonymous'),
-                school_name=data.get('schoolName', ''),
-                teacher_name=data.get('teacherName', ''),
-                family_size=int(data.get('familySize', 4)),
-                total_consumption=float(data.get('totalConsumption', 0)),
-                month_data=json.dumps(data.get('monthData', [])),
-                suggestions=json.dumps(data.get('suggestions', []))
+                student_name=student_name,
+                school_name=school_name,
+                teacher_name=teacher_name,
+                family_size=family_size,
+                total_consumption=total_consumption,
+                month_data=month_data,
+                suggestions=suggestions
             )
             db.session.add(entry)
             db.session.commit()

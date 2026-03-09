@@ -1,0 +1,4 @@
+DEV DB schema:
+id,student_name,school_name,teacher_name,family_size,total_consumption,month_data,created_at,bill_images,suggestions,school_logo,student_avatar
+PROD DB schema:
+id,student_name,school_name,teacher_name,family_size,total_consumption,month_data,created_at,bill_images,suggestions,school_logo,student_avatar

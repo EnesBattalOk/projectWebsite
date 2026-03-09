@@ -41,7 +41,6 @@ venv.bak/
 *.swo
 
 # Project specific
-# Veritabanı ve yüklenen resimlerin gitmesi için bu alanları yorum satırı yaptık
 static/uploads/*
-instance/*.db
-*.db
+# instance/*.db
+# *.db

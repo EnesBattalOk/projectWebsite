@@ -15,23 +15,7 @@
                 </div>
                 <p class="text-muted small mb-3">Bill Data Assistance | eTwinning Water Saving Activity</p>
 
-                <div class="participants-strip p-2 bg-white shadow-sm rounded-pill border mx-auto"
-                    style="max-width: 800px;">
-                    <div class="d-flex align-items-center gap-3 px-3 overflow-auto scrollbar-hide text-nowrap">
-                        <div class="fw-bold text-primary x-small border-end pe-3"><i class="fas fa-users me-2"></i>
-                            PARTICIPANTS</div>
-                        {% for entry in entries[:10] %}
-                        <div class="d-flex align-items-center gap-2 participant-item">
-                            <div class="avatar-mini">{{ entry.student_name[0]|upper }}</div>
-                            <span class="x-small fw-bold">{{ entry.student_name }}</span>
-                            <span class="badge bg-primary-soft text-primary x-small">{{ entry.total_consumption
-                                }}T</span>
-                        </div>
-                        {% else %}
-                        <small class="text-muted x-small">No participants yet.</small>
-                        {% endfor %}
-                    </div>
-                </div>
+
             </div>
 
             <!-- Left: Form & Analysis (Balanced Width) -->
@@ -213,6 +197,64 @@
                         <button class="btn btn-primary rounded-pill fw-bold shadow py-3" id="downloadBtn">
                             <i class="fas fa-camera me-2"></i> Download Report as Image
                         </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom: All Entries List -->
+            <div class="col-12 mt-5">
+                <div class="card border-0 shadow-sm p-4 rounded-4">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <div class="step-num-sm"><i class="fas fa-list"></i></div>
+                        <h4 class="mb-0 fw-bold">All Savings Records</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr class="x-small fw-bold text-uppercase">
+                                    <th>Student</th>
+                                    <th>School / Teacher</th>
+                                    <th class="text-center">Consumption</th>
+                                    <th class="text-center">Daily Avg</th>
+                                    <th class="text-center">Per Person</th>
+                                    <th class="text-end">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in entries %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-mini">{{ entry.student_name[0]|upper }}</div>
+                                            <span class="fw-bold">{{ entry.student_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="small fw-bold text-dark">{{ entry.school_name or '-' }}</div>
+                                        <div class="x-small text-muted">{{ entry.teacher_name or '-' }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary-soft text-primary">{{ entry.total_consumption }}
+                                            Tons</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="small fw-bold">{{ (entry.total_consumption * 1000 / 92) | round(1)
+                                            }} L</div>
+                                    </td>
+                                    <td class="text-center">
+                                        {% set daily_avg = (entry.total_consumption * 1000 / 90) %}
+                                        {% set per_person = daily_avg / (entry.family_size or 1) %}
+                                        <span
+                                            class="badge rounded-pill {% if per_person <= 50 %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ per_person | round(1) }} L
+                                        </span>
+                                    </td>
+                                    <td class="text-end text-muted x-small">
+                                        {{ entry.created_at.strftime('%d.%m.%Y') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -485,8 +527,15 @@
             try {
                 const response = await fetch('/api/save-water-entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const res = await response.json();
-                if (res.success) { alert('Saved!'); window.location.reload(); }
-            } catch (err) { alert('An error occurred.'); }
+                if (res.success) {
+                    alert('Saved!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (res.message || 'Could not save.'));
+                }
+            } catch (err) {
+                alert('An error occurred connection to the server.');
+            }
             finally { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Save'; }
         });
 
