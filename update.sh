@@ -5,9 +5,10 @@
 
 echo "--- 🔄 Güncelleme Başlatılıyor... ---"
 
-# 1. GitHub'dan son değişiklikleri çek (Veritabanına dokunmaz)
-echo "1. GitHub'dan kodlar çekiliyor..."
-git pull origin main
+# 1. GitHub'dan son değişiklikleri çek (Resimleri/Uploads klasörünü silmez)
+echo "1. GitHub'dan yeni kodlar ve güncel veritabanı çekiliyor..."
+git fetch origin
+git reset --hard origin/main
 
 # 2. Virtualenv aktif et ve kütüphaneleri güncelle
 echo "2. Kütüphaneler kontrol ediliyor..."
